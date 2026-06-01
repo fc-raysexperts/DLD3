@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RPEL — Financial Command Centre</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#059669;--gl:#d1fae5;--gd:#065f46;--a:#d97706;--al:#fef3c7;--ad:#92400e;--r:#dc2626;--rl:#fee2e2;--rd:#7f1d1d;--b:#2563eb;--bl:#eff6ff;--bd:#1e3a8a;--p:#7c3aed;--pl:#ede9fe;--pd:#4c1d95;--bdr:#e5e7eb;--pg:#f8fafc;--tx:#111827;--mt:#6b7280;--ht:#9ca3af}
+body{font-family:'Inter',sans-serif;background:var(--pg);color:var(--tx);font-size:14px;line-height:1.5;min-height:100vh}
+.hdr{background:#fff;border-bottom:1px solid var(--bdr);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:200;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.logo{width:36px;height:36px;background:var(--g);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ht1{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700}
+.ht2{font-size:11px;color:var(--mt);margin-top:1px}
+.pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid;white-space:nowrap}
+.pg{background:var(--gl);color:var(--gd);border-color:#6ee7b7}
+.pb{background:var(--bl);color:var(--bd);border-color:#93c5fd}
+.pa{background:var(--al);color:var(--ad);border-color:#fcd34d}
+.pr{background:var(--rl);color:var(--rd);border-color:#fca5a5}
+.pp{background:var(--pl);color:var(--pd);border-color:#c4b5fd}
+.rbtn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:var(--g);color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;transition:background .15s}
+.rbtn:hover{background:var(--gd)}.rbtn:disabled{background:#d1d5db;cursor:not-allowed;color:#9ca3af}
+.spin{display:inline-block;animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ctrl{background:#fff;border-bottom:1px solid var(--bdr);padding:8px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cl{font-size:10px;font-weight:700;color:var(--ht);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+select{padding:4px 8px;border-radius:7px;border:1px solid var(--bdr);background:#fff;color:var(--tx);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif}
+.seg{padding:4px 10px;border-radius:14px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--bdr);background:#fff;color:var(--mt);transition:all .15s;white-space:nowrap}
+.seg:hover{border-color:var(--g);color:var(--g)}.seg.on{background:var(--g);color:#fff;border-color:var(--g);font-weight:600}
+.dvd{width:1px;height:18px;background:var(--bdr);flex-shrink:0}
+.tabs{display:flex;border-bottom:1px solid var(--bdr);background:#fff;padding:0 20px;overflow-x:auto;position:sticky;top:57px;z-index:100}
+.tab{padding:9px 13px;font-size:12px;cursor:pointer;border:none;background:none;color:var(--mt);border-bottom:2.5px solid transparent;white-space:nowrap;font-weight:500;font-family:'Inter',sans-serif;transition:all .15s}
+.tab:hover{color:var(--tx)}.tab.on{color:var(--g);border-bottom-color:var(--g);font-weight:600}
+.bdy{padding:18px 20px 40px;max-width:1400px;margin:0 auto}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.card{background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:14px}
+.mc{background:#f9fafb;border:1px solid var(--bdr);border-radius:8px;padding:12px 14px}
+.mc-l{font-size:10px;color:var(--mt);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.mc-v{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--tx);line-height:1.1}
+.mc-s{font-size:11px;color:var(--mt);margin-top:3px}
+.mc-d{font-size:11px;margin-top:3px;font-weight:600}
+.up{color:var(--gd)}.dn{color:var(--rd)}.wa{color:var(--ad)}
+.sh{font-size:10px;font-weight:700;color:var(--mt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:5px}
+.rr{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f3f4f6}
+.rr:last-child{border-bottom:none}
+.rn{font-size:12px;color:var(--mt)}.rv{font-size:12px;font-weight:600;color:var(--tx)}
+.gg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:14px}
+.gc{background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:12px}
+.gc-l{font-size:10px;font-weight:600;color:var(--mt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.gc-v{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;margin-bottom:7px}
+.gc-t{height:5px;background:#e5e7eb;border-radius:3px;position:relative;margin-bottom:4px}
+.gc-f{height:100%;border-radius:3px;transition:width 1s ease}
+.gc-m{position:absolute;top:-4px;width:2px;height:13px;background:#374151;border-radius:1px;opacity:.3}
+.gc-ft{display:flex;justify-content:space-between;font-size:10px;color:var(--ht)}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{padding:7px 9px;text-align:left;font-size:10px;font-weight:700;color:var(--mt);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--bdr);background:#f9fafb;white-space:nowrap}
+.tbl td{padding:7px 9px;border-bottom:1px solid #f3f4f6;color:var(--tx);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}.tbl tr:hover td{background:#fafafa}
+.tg{padding:2px 6px;border-radius:8px;font-size:10px;font-weight:700;white-space:nowrap}
+.tg-g{background:var(--gl);color:var(--gd)}.tg-a{background:var(--al);color:var(--ad)}.tg-r{background:var(--rl);color:var(--rd)}.tg-b{background:var(--bl);color:var(--bd)}.tg-p{background:var(--pl);color:var(--pd)}
+.alrt{display:flex;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid;margin-bottom:7px}
+.alrt-d{width:6px;height:6px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.alrt-b{font-size:12px;line-height:1.65;color:#374151}
+.alrt-b strong{color:var(--tx);font-weight:600}
+.alrt.red{background:#fff5f5;border-color:#fca5a5}.alrt.red .alrt-d{background:var(--r)}
+.alrt.amber{background:#fffdf0;border-color:#fcd34d}.alrt.amber .alrt-d{background:var(--a)}
+.alrt.green{background:#f0fdf4;border-color:#86efac}.alrt.green .alrt-d{background:var(--g)}
+.alrt.blue{background:#f0f7ff;border-color:#93c5fd}.alrt.blue .alrt-d{background:var(--b)}
+.pk{display:flex;align-items:center;gap:9px;padding:9px 12px;background:#fff;border:1px solid var(--bdr);border-radius:8px;margin-bottom:5px;cursor:pointer;transition:all .15s}
+.pk:hover{border-color:var(--g);box-shadow:0 2px 6px rgba(5,150,105,.07)}
+.pbw{height:5px;background:#e5e7eb;border-radius:3px;overflow:hidden;min-width:48px}
+.pbf{height:100%;border-radius:3px;background:var(--g)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:18px;overflow-y:auto}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:10px;width:100%;max-width:1050px;max-height:88vh;overflow-y:auto;position:relative}
+.modal-hdr{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:10}
+.modal-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--mt);padding:4px 7px;border-radius:6px;line-height:1}
+.modal-close:hover{background:#f3f4f6}
+.modal-body{padding:18px}
+.tl{display:flex;overflow-x:auto;padding-bottom:3px;margin-bottom:14px}
+.tli{flex:1;min-width:95px;padding:9px 7px 7px;border-top:3px solid var(--bdr);margin-right:3px}
+.tli-past{border-color:#9ca3af}
+.tli-cur{border-color:var(--g);background:#f0fdf4;border-radius:0 0 8px 8px}
+.tli-proj{border-color:#c4b5fd;border-style:dashed;background:#faf5ff;border-radius:0 0 8px 8px}
+.tl-p{font-size:9px;font-weight:700;color:var(--mt);text-transform:uppercase;margin-bottom:2px}
+.tl-v{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--tx)}
+.tl-b{font-size:9px;padding:1px 5px;border-radius:5px;font-weight:700;margin-top:2px;display:inline-block}
+.foot{padding:11px 20px;border-top:1px solid var(--bdr);background:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:7px;font-size:11px;color:var(--ht)}
+.fbt{padding:5px 11px;border-radius:7px;border:1px solid var(--bdr);background:#fff;color:var(--mt);cursor:pointer;font-size:11px;font-family:'Inter',sans-serif}
+.fbt:hover{background:#f9fafb}
+.load-msg{padding:60px;text-align:center;color:var(--mt)}
+.load-spin{font-size:22px;display:inline-block;animation:spin .9s linear infinite}
+@media(max-width:960px){.g4,.gg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.g3,.g4,.gg{grid-template-columns:1fr}.g2{grid-template-columns:1fr}.bdy{padding:12px}}
+@media print{.hdr,.ctrl,.tabs,.foot{position:static!important}.rbtn{display:none!important}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="logo"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+    <div>
+      <div class="ht1">Rays Power Experts Ltd. — Financial Command Centre</div>
+      <div class="ht2">Dynamic Live Dashboard &nbsp;·&nbsp; Zoho Books Org 60038956413 &nbsp;·&nbsp; <span id="ts">Initialising…</span></div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+    <span class="pill pg">CRISIL BBB / Stable</span>
+    <span class="pill pb">Solar EPC · Jaipur, RJ</span>
+    <span id="src-pill" class="pill pa">Loading…</span>
+    <button class="rbtn" id="rbtn" onclick="doRefresh()"><span id="ri">&#8635;</span> Refresh live data</button>
+  </div>
+</div>
+
+<div class="ctrl">
+  <span class="cl">FY</span>
+  <select id="fyS" onchange="onFilter()">
+    <option value="27" selected>FY 2026-27</option>
+    <option value="26">FY 2025-26</option>
+    <option value="25">FY 2024-25</option>
+    <option value="24">FY 2023-24</option>
+  </select>
+  <span class="cl">Quarter</span>
+  <select id="qS" onchange="onFilter()">
+    <option value="annual" selected>Annual (Full Year)</option>
+    <option value="q1">Q1 (Apr-Jun)</option>
+    <option value="q2">Q2 (Jul-Sep)</option>
+    <option value="q3">Q3 (Oct-Dec)</option>
+    <option value="q4">Q4 (Jan-Mar)</option>
+  </select>
+  <div class="dvd"></div>
+  <span class="cl">Segment</span>
+  <button class="seg on" id="s-all"   onclick="setSeg('all')">All</button>
+  <button class="seg"    id="s-epc"   onclick="setSeg('epc')">EPC</button>
+  <button class="seg"    id="s-parks" onclick="setSeg('parks')">Solar Parks</button>
+  <button class="seg"    id="s-om"    onclick="setSeg('om')">O&amp;M</button>
+  <button class="seg"    id="s-bess"  onclick="setSeg('bess')">BESS</button>
+  <span id="pst" class="pill pb" style="margin-left:auto;font-size:10px">FY27 Annual · Live</span>
+</div>
+
+<div class="tabs">
+  <button class="tab on" id="t-ov" onclick="showTab('ov')">Overview</button>
+  <button class="tab"    id="t-fi" onclick="showTab('fi')">Financials</button>
+  <button class="tab"    id="t-ra" onclick="showTab('ra')">Ratios &amp; Health</button>
+  <button class="tab"    id="t-pr" onclick="showTab('pr')">Projects &amp; Parks</button>
+  <button class="tab"    id="t-cl" onclick="showTab('cl')">Clients &amp; Suppliers</button>
+  <button class="tab"    id="t-ad" onclick="showTab('ad')">Advisory &amp; Alerts</button>
+  <button class="tab"    id="t-tr" onclick="showTab('tr')">3-Year Trend</button>
+</div>
+
+<div class="bdy" id="bdy">
+  <div class="load-msg"><div class="load-spin">&#8635;</div><div style="margin-top:10px">Loading dashboard…</div></div>
+</div>
+
+<div class="foot">
+  <span>Live: Zoho Books Org 60038956413 &nbsp;·&nbsp; Historical: CRISIL report + management discussion &nbsp;·&nbsp; FY27 Annual = run-rate projection</span>
+  <div style="display:flex;gap:7px">
+    <button class="fbt" onclick="window.print()">Print / PDF</button>
+    <button class="fbt" onclick="dlCSV()">Export CSV</button>
+  </div>
+</div>
+
+<div id="modal-bg" class="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div>
+        <div id="modal-title" style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700"></div>
+        <div id="modal-sub"   style="font-size:11px;color:var(--mt);margin-top:2px"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">&#10005;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+var ORG = "60038956413";
+var charts = {};
+var curTab = "ov";
+var curSeg = "all";
+var fetchBusy = false;
+
+// ── HISTORICAL (all in Rs Lakh) ───────────────────────────────────
+var HIST = {
+  "24": {rev:4430,  eb:540,   ebP:12.18, pat:278,  patP:6.3,  nca:402,  nw:1250,  debt:120,  ic:19.7, cr:3.1,  dd:112, gr:0.09, ro:null, roe:null, cw:0,    ob:0,     cu:null, gw:null, id:10, cd:null},
+  "25": {rev:13350, eb:3886,  ebP:29.11, pat:2590, patP:19.4, nca:2794, nw:7500,  debt:651,  ic:57.9, cr:3.76, dd:112, gr:0.09, ro:65.2, roe:49.3, cw:237,  ob:0,     cu:65,   gw:155,  id:12, cd:9},
+  "26": {rev:40400, eb:8255,  ebP:20.43, pat:7920, patP:19.6, nca:8040, nw:18235, debt:2569, ic:40.7, cr:1.77, dd:67,  gr:0.14, ro:56,   roe:61.5, cw:3790, ob:65160, cu:76,   gw:156,  id:16, cd:24}
+};
+
+// ── LIVE SLOT (baseline = last known Zoho values) ─────────────────
+var LV = {
+  rev:14740, apr:3910, may:10830, outstanding:6340, oc:57, ti:891,
+  cu:57, ccD:2770, ccL:7500, cash:392, fdr:3547, rcv:11527,
+  sAdv:12268, cAdv:12973, debt:2970, nw:18235,
+  isLive:false, lastFetched:null,
+  tc:[
+    {nm:"Balkrishna Industries Ltd.",b:2811,o:240, s:"Auto Ancillary"},
+    {nm:"Lords Chloro Alkali (Ph.2)",b:1606,o:29,  s:"Chemicals"},
+    {nm:"Wonder Cement (Ph.2+BESS)", b:1440,o:272, s:"Cement"},
+    {nm:"Miracle Coro Plast Pvt Ltd",b:1010,o:1004,s:"Plastics"},
+    {nm:"Alliance Polysacks Pvt Ltd",b:982, o:726, s:"Packaging"},
+    {nm:"Inox Air Products (Ph.2)",  b:729, o:0,   s:"Chemicals"},
+    {nm:"Raksha Bars Pvt Ltd",       b:685, o:60,  s:"Steel"},
+    {nm:"Aman Hospitality Pvt Ltd",  b:673, o:313, s:"Hospitality"},
+    {nm:"Ravi Surya Developers",     b:433, o:426, s:"Real Estate"},
+    {nm:"Diligent Pinkcity Centre",  b:385, o:0,   s:"Commercial"}
+  ]
+};
+
+// ── PARKS DATA ────────────────────────────────────────────────────
+var PARKS = [
+  {id:1,nm:"Dechu Solar Park",      loc:"Barmer, RJ",  mw:"~5 MW",inv:1240,st:"CWIP",   cm:"Q2 FY27",tr:"3.8/unit",ar:380,nt:"Grid connected; pre-commissioning",budget:1800,pos:3,sos:2,inv_cnt:8,bills:12,paid:980,opay:260,ml:["Land acquisition done","Grid connectivity done","Transmission line done","Equipment 85% procured","Civil work 70%","Commissioning Q2 FY27"]},
+  {id:2,nm:"Lunkaransar Park",       loc:"Bikaner, RJ", mw:"~3 MW",inv:520, st:"CWIP",   cm:"Q2 FY27",tr:"3.8/unit",ar:228,nt:"Transmission connected",        budget:900, pos:2,sos:1,inv_cnt:5,bills:9, paid:430,opay:90, ml:["Land acquisition done","Grid connectivity done","Transmission line done","Civil work 60%","Equipment 75%","Commissioning Q2 FY27"]},
+  {id:3,nm:"Kolayat Park",           loc:"Bikaner, RJ", mw:"~3 MW",inv:480, st:"CWIP",   cm:"Q3 FY27",tr:"3.8/unit",ar:228,nt:"All approvals complete",         budget:850, pos:2,sos:1,inv_cnt:4,bills:8, paid:390,opay:90, ml:["Land acquisition done","Approvals done","Grid connected","Civil work 50%","Equipment 60%","Commissioning Q3 FY27"]},
+  {id:4,nm:"Panchu Park",            loc:"Jodhpur, RJ", mw:"~2 MW",inv:310, st:"CWIP",   cm:"Q3 FY27",tr:"3.8/unit",ar:152,nt:"Connected to grid",              budget:600, pos:1,sos:1,inv_cnt:3,bills:6, paid:250,opay:60, ml:["Land acquisition done","Grid connectivity done","Civil work 40%","Equipment 50%","Commissioning Q3 FY27"]},
+  {id:5,nm:"Pugal Park",             loc:"Bikaner, RJ", mw:"~2 MW",inv:290, st:"CWIP",   cm:"Q4 FY27",tr:"3.8/unit",ar:152,nt:"Development ongoing",            budget:580, pos:1,sos:1,inv_cnt:3,bills:5, paid:220,opay:70, ml:["Land acquisition done","Approvals done","Civil work 30%","Equipment 40%","Commissioning Q4 FY27"]},
+  {id:6,nm:"SS Nagar Park",          loc:"Rajasthan",   mw:"~2 MW",inv:250, st:"Planned",cm:"FY28",    tr:"4.0/unit",ar:160,nt:"Land acquired",                  budget:500, pos:1,sos:0,inv_cnt:1,bills:2, paid:200,opay:50, ml:["Land acquisition done","Approvals in progress","Design stage","Target commissioning FY28"]},
+  {id:7,nm:"Napasar Park",           loc:"Bikaner, RJ", mw:"~2 MW",inv:280, st:"Planned",cm:"FY28",    tr:"4.0/unit",ar:160,nt:"Intangible dev. costs booked",    budget:520, pos:1,sos:0,inv_cnt:1,bills:3, paid:220,opay:60, ml:["Development rights done","Design in progress","Target commissioning FY28"]},
+  {id:8,nm:"Sanchore Park",          loc:"Jalore, RJ",  mw:"~2 MW",inv:430, st:"Planned",cm:"FY28",    tr:"4.0/unit",ar:160,nt:"Development rights held",         budget:650, pos:1,sos:0,inv_cnt:2,bills:4, paid:350,opay:80, ml:["Development rights done","Land acquired","Approvals pending","Target commissioning FY28"]}
+];
+
+var EPC = [
+  {id:101,nm:"JSW Group - Vijayanagar",    client:"JSW Group",      val:20370,billed:12200,coll:11800,seg:"EPC",    st:"In Progress",margin:21.0,done:60,loc:"Karnataka",rpt:false},
+  {id:102,nm:"Wonder Cement Ph.2 + BESS",  client:"Wonder Cement",  val:11380,billed:5440, coll:5168, seg:"EPC+BESS",st:"In Progress",margin:22.5,done:48,loc:"Rajasthan", rpt:false},
+  {id:103,nm:"Uttam Strips Solar Park",    client:"Uttam Strips",   val:8740, billed:4200, coll:4000, seg:"EPC",    st:"In Progress",margin:20.0,done:48,loc:"Rajasthan", rpt:false},
+  {id:104,nm:"Balkrishna Industries",      client:"Balkrishna Ind.",val:5200, billed:2811, coll:2571, seg:"EPC",    st:"Active",     margin:20.5,done:54,loc:"Rajasthan", rpt:false},
+  {id:105,nm:"Lords Chloro Alkali Ph.2",   client:"Lords Chloro",   val:3200, billed:1606, coll:1577, seg:"EPC",    st:"Active",     margin:21.0,done:50,loc:"Rajasthan", rpt:false},
+  {id:106,nm:"Soltown Infra Projects",     client:"Soltown Infra",  val:4200, billed:2910, coll:2400, seg:"EPC",    st:"Active",     margin:19.0,done:70,loc:"Rajasthan", rpt:true}
+];
+
+var OMC = [
+  {c:"Balkrishna Industries",mw:"5.2 MW",ct:"5yr",a:120,nx:"Jul 2026",ok:true},
+  {c:"Lords Chloro Alkali",  mw:"3.8 MW",ct:"5yr",a:90, nx:"Sep 2026",ok:true},
+  {c:"Inox Air Products",    mw:"4.5 MW",ct:"3yr",a:110,nx:"Dec 2026",ok:true},
+  {c:"Wonder Cement",        mw:"8.0 MW",ct:"5yr",a:180,nx:"Mar 2027",ok:true},
+  {c:"Raksha Bars",          mw:"3.2 MW",ct:"3yr",a:70, nx:"Jun 2026",ok:false},
+  {c:"Other 37 clients",     mw:"~87 MW",ct:"Var.",a:1230,nx:"Rolling",ok:true}
+];
+
+// ── HELPERS ───────────────────────────────────────────────────────
+function cr(v,d) {
+  if(v===null||v===undefined) return "—";
+  d = d===undefined ? 1 : d;
+  return "Rs " + (v/100).toFixed(d) + " Cr";
+}
+function pct(v,d) {
+  if(v===null||v===undefined) return "—";
+  d = d===undefined ? 1 : d;
+  return v.toFixed(d) + "%";
+}
+function num(v,d) {
+  if(v===null||v===undefined) return "—";
+  d = d===undefined ? 1 : d;
+  return v.toFixed(d);
+}
+function tgc(s) {
+  var m = {good:"tg-g",watch:"tg-a",risk:"tg-r",proj:"tg-p",info:"tg-b"};
+  return m[s] || "tg-b";
+}
+function sc(v,t,inv) {
+  if(v===null||v===undefined) return "#9ca3af";
+  var ok = inv ? v<=t : v>=t;
+  var cl = inv ? v<=t*1.2 : v>=t*0.85;
+  return ok ? "#065f46" : cl ? "#92400e" : "#7f1d1d";
+}
+function yoy(a,b) {
+  if(!a||!b) return "";
+  var c = ((b-a)/a*100);
+  return (c>=0 ? "+" : "") + c.toFixed(1) + "% YoY";
+}
+function fyLbl(fy) {
+  var m = {"24":"FY24 (Audited)","25":"FY25 (Audited)","26":"FY26 (Provisional)","27":"FY27 (Live)"};
+  return m[fy] || ("FY"+fy);
+}
+function qLbl(q) {
+  var m = {annual:"Full Year",q1:"Q1 Apr-Jun",q2:"Q2 Jul-Sep",q3:"Q3 Oct-Dec",q4:"Q4 Jan-Mar"};
+  return m[q] || q;
+}
+function mkEl(tag,cls,html) {
+  var el = document.createElement(tag);
+  if(cls) el.className = cls;
+  if(html!==undefined) el.innerHTML = html;
+  return el;
+}
+function h(str) {
+  // Safe string, no XSS concern here — all data is hardcoded
+  return str===null||str===undefined ? "—" : String(str);
+}
+
+// ── PROJECTION ────────────────────────────────────────────────────
+function buildP27() {
+  var rr = Math.max(LV.rev, 14740);
+  var annRev = Math.round(rr / 2 * 12 * 0.93);
+  var ebP = 21.2;
+  return {
+    rev: annRev,
+    ebP: ebP,
+    eb:  Math.round(annRev * ebP / 100),
+    pat: Math.round(annRev * 0.196),
+    patP:19.6,
+    nca: Math.round(annRev * 0.196),
+    nw:  Math.round((LV.nw||18235) + annRev * 0.196),
+    debt:LV.debt || 2569,
+    ob:  65160,
+    isProj: true,
+    basis: "Rs 651 Cr orderbook + Apr-May run-rate x12"
+  };
+}
+
+// ── GET DATA FOR SELECTED PERIOD ──────────────────────────────────
+function getD() {
+  var fy  = document.getElementById("fyS").value;
+  var q   = document.getElementById("qS").value;
+  var seg = curSeg;
+  var d;
+
+  if(fy === "27") {
+    if(q === "annual") {
+      d = buildP27();
+    } else {
+      // Q1 or any other quarter — use live data
+      d = {
+        rev: LV.rev, apr: LV.apr, may: LV.may,
+        outstanding: LV.outstanding, oc: LV.oc, ti: LV.ti,
+        cu: LV.cu, ccD: LV.ccD, ccL: LV.ccL,
+        cash: LV.cash, fdr: LV.fdr, rcv: LV.rcv,
+        sAdv: LV.sAdv, cAdv: LV.cAdv,
+        debt: LV.debt, nw: LV.nw,
+        eb: null, ebP: null, pat: null, patP: null, nca: null,
+        ic: 40.7, cr: 1.77, dd: 67, gr: null, gw: 156, ro: null, roe: null,
+        ob: 65160, cw: 3790, id: null, cd: null
+      };
+      if(d.debt && d.nw) d.gr = Math.round(d.debt/d.nw*100)/100;
+    }
+  } else {
+    d = HIST[fy] ? JSON.parse(JSON.stringify(HIST[fy])) : JSON.parse(JSON.stringify(HIST["26"]));
+  }
+
+  // Segment revenue scaling
+  var sc2 = {all:1, epc:0.94, parks:0, om:0.06, bess:0.03};
+  var s = sc2[seg] || 1;
+  if(seg !== "all") {
+    if(d.rev)  d.rev  = Math.round(d.rev  * s);
+    if(d.eb)   d.eb   = Math.round(d.eb   * s);
+    if(d.pat)  d.pat  = Math.round(d.pat  * s);
+    if(d.nca)  d.nca  = Math.round(d.nca  * s);
+  }
+
+  return {d:d, fy:fy, q:q, seg:seg};
+}
+
+function isLivePeriod() {
+  var fy = document.getElementById("fyS").value;
+  return fy === "27";
+}
+
+// ── ZOHO FETCH ────────────────────────────────────────────────────
+function doRefresh() {
+  if(fetchBusy) return;
+  fetchBusy = true;
+  var btn = document.getElementById("rbtn");
+  var ri  = document.getElementById("ri");
+  var sp  = document.getElementById("src-pill");
+  btn.disabled = true;
+  ri.className = "spin";
+  sp.textContent = "Connecting…";
+  sp.className = "pill pa";
+
+  var now = new Date();
+  var m = now.getMonth()+1, y = now.getFullYear();
+  var qs, qe;
+  if(m>=4&&m<=6)  { qs=y+"-04-01"; qe=y+"-06-30"; }
+  else if(m>=7&&m<=9)  { qs=y+"-07-01"; qe=y+"-09-30"; }
+  else if(m>=10&&m<=12){ qs=y+"-10-01"; qe=y+"-12-31"; }
+  else                 { qs=y+"-01-01"; qe=y+"-03-31"; }
+
+  // Snapshot current data — restored on error
+  var snap = JSON.parse(JSON.stringify(LV));
+
+  var body = JSON.stringify({
+    model: "claude-sonnet-4-20250514",
+    max_tokens: 1400,
+    system: "You are a financial data extractor for Zoho Books org " + ORG + ". Fetch invoices from " + qs + " to " + qe + " and current balance sheet. Return ONLY a valid compact JSON object — no markdown, no text: {\"rev\":<total invoice amount in lakh>,\"outstanding\":<total outstanding in lakh>,\"oc\":<overdue count>,\"ti\":<total invoice count>,\"cash\":<cash+bank in lakh>,\"fdr\":<FDR balance in lakh>,\"rcv\":<trade receivables in lakh>,\"sAdv\":<supplier advances in lakh>,\"cAdv\":<customer advances in lakh>,\"ccD\":<CC drawn absolute in lakh>,\"tc\":[{\"nm\":\"name\",\"b\":<billed lakh>,\"o\":<outstanding lakh>,\"s\":\"sector\"}] top 10 clients}",
+    messages: [{role:"user",content:"Fetch Zoho Books data for org " + ORG + ", period " + qs + " to " + qe}],
+    mcp_servers: [{type:"url",url:"https://claude-zohobooks.zohomcp.in/mcp/message",name:"zoho"}]
+  });
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST","https://api.anthropic.com/v1/messages",true);
+  xhr.setRequestHeader("Content-Type","application/json");
+  xhr.timeout = 45000;
+
+  xhr.onload = function() {
+    try {
+      var data = JSON.parse(xhr.responseText);
+      var txt = "";
+      if(data.content) {
+        for(var i=0;i<data.content.length;i++) {
+          if(data.content[i].type==="text") txt += data.content[i].text;
+        }
+      }
+      var clean = txt.replace(/\u0060\u0060\u0060json/g,"").replace(/\u0060\u0060\u0060/g,"").trim();
+      var p = JSON.parse(clean);
+      function mg(key,val) { if(typeof val==="number"&&!isNaN(val)&&val>=0) LV[key]=Math.round(val); }
+      mg("rev",p.rev); mg("outstanding",p.outstanding); mg("ccD",p.ccD);
+      mg("cash",p.cash); mg("fdr",p.fdr); mg("rcv",p.rcv);
+      mg("sAdv",p.sAdv); mg("cAdv",p.cAdv);
+      if(typeof p.oc==="number") LV.oc=p.oc;
+      if(typeof p.ti==="number") LV.ti=p.ti;
+      if(Array.isArray(p.tc)&&p.tc.length>=3) LV.tc=p.tc;
+      if(LV.ccD&&LV.ccL) LV.cu=Math.round(LV.ccD/LV.ccL*100*10)/10;
+      LV.isLive=true;
+      LV.lastFetched=now.toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"});
+      document.getElementById("ts").textContent="Updated: "+LV.lastFetched;
+      sp.textContent="Live Zoho data"; sp.className="pill pg";
+    } catch(e) {
+      Object.assign(LV, snap);
+      var ts = LV.lastFetched ? " (last: "+LV.lastFetched+")" : "";
+      sp.textContent="Cached data"+ts; sp.className="pill pa";
+      document.getElementById("ts").textContent = LV.lastFetched ? "Cached: "+LV.lastFetched : "Baseline — Zoho offline";
+    }
+    fetchBusy=false; btn.disabled=false; ri.className="";
+    renderAll();
+  };
+  xhr.onerror = xhr.ontimeout = function() {
+    Object.assign(LV, snap);
+    var ts = LV.lastFetched ? " (last: "+LV.lastFetched+")" : "";
+    sp.textContent="Cached data"+ts; sp.className="pill pa";
+    document.getElementById("ts").textContent = LV.lastFetched ? "Cached: "+LV.lastFetched : "Baseline — Zoho offline";
+    fetchBusy=false; btn.disabled=false; ri.className="";
+    renderAll();
+  };
+  xhr.send(body);
+}
+
+// ── ROUTING ───────────────────────────────────────────────────────
+function setSeg(s) {
+  curSeg = s;
+  var segs = document.querySelectorAll(".seg");
+  for(var i=0;i<segs.length;i++) segs[i].classList.remove("on");
+  var el = document.getElementById("s-"+s);
+  if(el) el.classList.add("on");
+  renderAll();
+}
+function showTab(t) {
+  curTab = t;
+  var tabs = document.querySelectorAll(".tab");
+  for(var i=0;i<tabs.length;i++) tabs[i].classList.remove("on");
+  var el = document.getElementById("t-"+t);
+  if(el) el.classList.add("on");
+  renderAll();
+}
+function onFilter() { renderAll(); }
+
+function upPSt() {
+  var fy = document.getElementById("fyS").value;
+  var q  = document.getElementById("qS").value;
+  var lbl = fyLbl(fy)+" - "+qLbl(q);
+  var live = fy==="27";
+  var el = document.getElementById("pst");
+  el.textContent = lbl;
+  el.className = "pill " + (live ? "pg" : "pb");
+}
+
+function destroyCharts() {
+  var keys = Object.keys(charts);
+  for(var i=0;i<keys.length;i++) {
+    try { charts[keys[i]].destroy(); } catch(e) {}
+  }
+  charts = {};
+}
+
+function renderAll() {
+  destroyCharts();
+  upPSt();
+  var res = getD();
+  var d=res.d, fy=res.fy, q=res.q, seg=res.seg;
+  var el = document.getElementById("bdy");
+  try {
+    var html = "";
+    if(curTab==="ov") html = rOv(d,fy,q,seg);
+    else if(curTab==="fi") html = rFi(d,fy,q,seg);
+    else if(curTab==="ra") html = rRa(d,fy,q,seg);
+    else if(curTab==="pr") html = rPr(d,fy,q,seg);
+    else if(curTab==="cl") html = rCl(d,fy,q,seg);
+    else if(curTab==="ad") html = rAd(d,fy,q,seg);
+    else if(curTab==="tr") html = rTr();
+    else html = rOv(d,fy,q,seg);
+    el.innerHTML = html;
+  } catch(err) {
+    el.innerHTML = '<div class="card" style="margin-top:20px;border-color:#fca5a5;background:#fff5f5"><div style="font-weight:600;color:#dc2626;margin-bottom:6px">Render error</div><div style="font-size:12px;color:var(--mt)">'+err.message+'</div></div>';
+  }
+  setTimeout(function(){ bCharts(d,fy,q); }, 80);
+}
+
+// ── HTML BUILDERS ─────────────────────────────────────────────────
+function alrt(cls, head, body) {
+  return '<div class="alrt '+cls+'"><div class="alrt-d"></div><div class="alrt-b"><strong>'+head+'</strong><br><br>'+body+'</div></div>';
+}
+function mcCard(label, value, sub, delta, deltaClass) {
+  var d = delta ? '<div class="mc-d '+(deltaClass||"")+'">'+delta+'</div>' : "";
+  var s = sub   ? '<div class="mc-s">'+sub+'</div>' : "";
+  return '<div class="mc"><div class="mc-l">'+label+'</div><div class="mc-v">'+value+'</div>'+s+d+'</div>';
+}
+function rrRow(label, value, valueStyle) {
+  var style = valueStyle ? ' style="'+valueStyle+'"' : "";
+  return '<div class="rr"><span class="rn">'+label+'</span><span class="rv"'+style+'>'+value+'</span></div>';
+}
+function secHead(text, badge) {
+  var b = badge ? '<span class="pill pp" style="font-size:9px">'+badge+'</span>' : "";
+  return '<div class="sh">'+text+b+'</div>';
+}
+function progBar(pct2, color) {
+  color = color || "var(--g)";
+  return '<div class="pbw"><div class="pbf" style="width:'+Math.min(100,pct2)+'%;background:'+color+'"></div></div>';
+}
+
+// ── OVERVIEW ──────────────────────────────────────────────────────
+function rOv(d,fy,q,seg) {
+  var P27 = buildP27();
+  var prev = {"27":HIST["26"],"26":HIST["25"],"25":HIST["24"]}[fy] || null;
+  var isQ1 = fy==="27" && q==="q1";
+  var isPrj = d.isProj;
+  var pL = fyLbl(fy)+" - "+qLbl(q)+(seg!=="all" ? " - "+seg.toUpperCase() : "");
+
+  var tlHtml = '<div class="tl">';
+  var tlItems = [
+    {l:"FY24",v:"Rs 44 Cr",cls:"tli-past"},
+    {l:"FY25",v:"Rs 134 Cr",cls:"tli-past"},
+    {l:"FY26",v:"Rs 404 Cr",cls:"tli-past"},
+    {l:"FY27 Q1",v:cr(LV.rev),cls:"tli-cur"},
+    {l:"FY27 Ann.",v:cr(P27.rev)+" E",cls:"tli-proj"}
+  ];
+  var tlBgs = {
+    "tli-past":"background:#f3f4f6;color:#6b7280",
+    "tli-cur":"background:#d1fae5;color:#065f46",
+    "tli-proj":"background:#ede9fe;color:#5b21b6"
+  };
+  var tlTxts = {"tli-past":"Actual","tli-cur":"Live","tli-proj":"Projected"};
+  for(var i=0;i<tlItems.length;i++) {
+    var ti = tlItems[i];
+    tlHtml += '<div class="tli '+ti.cls+'">';
+    tlHtml += '<div class="tl-p">'+ti.l+'</div>';
+    tlHtml += '<div class="tl-v">'+ti.v+'</div>';
+    tlHtml += '<div class="tl-b" style="'+tlBgs[ti.cls]+'">'+tlTxts[ti.cls]+'</div>';
+    tlHtml += '</div>';
+  }
+  tlHtml += '</div>';
+
+  var html = "";
+  if(isPrj) html += alrt("blue","FY27 Annual projection","Based on "+P27.basis+". Values auto-update as each quarter's live data arrives from Zoho Books.");
+  if(seg==="parks") html += alrt("blue","Solar Parks segment","Solar Parks are pre-revenue. See the <strong>Projects &amp; Parks</strong> tab for full CWIP, commissioning status, and financials.");
+
+  html += '<div class="card" style="margin-bottom:14px">';
+  html += secHead("Revenue timeline — FY24 to FY27","FY27 Annual = projected");
+  html += tlHtml;
+  html += '</div>';
+
+  html += secHead("Key performance — "+pL);
+  html += '<div class="g4">';
+  html += mcCard("Revenue",cr(d.rev),pL,prev ? yoy(prev.rev,d.rev)+" YoY" : null,"up");
+  html += mcCard("EBITDA margin",d.ebP ? pct(d.ebP) : (fy==="27" ? "~20-21% est." : "—"),d.eb ? cr(d.eb)+" EBITDA" : null,null,"");
+  html += mcCard("PAT",d.pat ? cr(d.pat) : (isQ1?"Pending Q close":"—"),d.patP ? pct(d.patP)+" margin" : null,null,"");
+  html += mcCard("Net worth",cr(d.nw||HIST["26"].nw),null,prev&&prev.nw ? yoy(prev.nw,d.nw||HIST["26"].nw)+" YoY" : null,"up");
+  html += '</div>';
+
+  if(isQ1) {
+    html += secHead("Live Q1 billing — from Zoho Books");
+    html += '<div class="g4">';
+    html += mcCard("April 2026",cr(LV.apr),"88 invoices raised",null,"");
+    html += mcCard("May 2026",cr(LV.may),null,"+177% vs April","up");
+    html += mcCard("Run rate (annualised)",cr(P27.rev),null,"vs Rs 404 Cr FY26","up");
+    html += mcCard("Outstanding invoices",cr(LV.outstanding),LV.oc+" overdue invoices",null,"wa");
+    html += '</div>';
+  }
+
+  html += '<div class="g2">';
+  html += '<div class="card">';
+  html += secHead("Order book &amp; pipeline");
+  html += rrRow("Total active order book",'<span class="tg tg-g">Rs 651.6 Cr</span>');
+  html += rrRow("JSW Group",'<span class="tg tg-b">Rs 203.7 Cr</span>');
+  html += rrRow("Wonder Cement Ph.2+BESS",'<span class="tg tg-b">Rs 113.8 Cr</span>');
+  html += rrRow("Uttam Strips",'<span class="tg tg-b">Rs 87.4 Cr</span>');
+  html += rrRow("Other 19 active orders",'<span class="tg tg-a">Rs 246.7 Cr</span>');
+  html += rrRow("Book / FY26 revenue",'<span class="tg tg-g">1.6x</span>');
+  html += '</div>';
+
+  html += '<div class="card">';
+  html += secHead("Liquidity &amp; debt (current)");
+  html += rrRow("Cash &amp; bank balances",cr(LV.cash));
+  html += rrRow("Fixed deposits (FDR)",cr(LV.fdr));
+  html += rrRow("Total liquid assets",cr((LV.cash||0)+(LV.fdr||0)));
+  html += rrRow("CC drawn (IOB)",cr(LV.ccD)+" / Rs 75 Cr limit");
+  html += rrRow("CC utilisation",(LV.cu||57).toFixed(1)+"%");
+  html += rrRow("Total debt",cr(LV.debt||2569));
+  html += rrRow("Gearing",((LV.debt||2569)/(LV.nw||18235)).toFixed(2)+"x — near debt-free");
+  html += '</div>';
+  html += '</div>';
+
+  html += secHead("Group entities");
+  html += '<div class="g3">';
+  var ents = [
+    {n:"RPEL — Core EPC",s:"CRISIL BBB/Stable",r:"Rs 404 Cr FY26",c:"good"},
+    {n:"Rays O&amp;M Experts Pvt Ltd",s:"O&amp;M subsidiary",r:"Rs 24 Cr FY26 — ~38% margin",c:"good"},
+    {n:"RPE Energy Reserve Pvt Ltd",s:"IPP — Solar Parks",r:"CWIP Rs 37.9 Cr — pre-revenue",c:"watch"},
+    {n:"RPE Technologies Pvt Ltd",s:"Technology platform",r:"Early stage",c:"info"},
+    {n:"Rays Rooftop SPV",s:"Rooftop solar",r:"Operational",c:"info"},
+    {n:"Rays Experts Foundation",s:"CSR entity",r:"Non-commercial",c:"info"}
+  ];
+  for(var ei=0;ei<ents.length;ei++) {
+    var en = ents[ei];
+    html += '<div class="mc"><div class="mc-l"><span class="'+tgc(en.c)+' tg" style="font-size:9px">'+(en.c==="good"?"Active":en.c==="watch"?"Pre-rev":"Early")+'</span></div>';
+    html += '<div style="font-size:13px;font-weight:600;margin-bottom:2px">'+en.n+'</div>';
+    html += '<div class="mc-s">'+en.s+'</div>';
+    html += '<div class="mc-d '+(en.c==="good"?"up":en.c==="watch"?"wa":"")+'">'+en.r+'</div></div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+// ── FINANCIALS ────────────────────────────────────────────────────
+function rFi(d,fy,q,seg) {
+  var P27 = buildP27();
+  var pL = fyLbl(fy)+" - "+qLbl(q)+(seg!=="all"?" - "+seg.toUpperCase():"");
+  var html = "";
+  if(d.isProj) html += alrt("blue","FY27 Annual projection",P27.basis+". Values replace automatically from Zoho each quarter.");
+
+  html += '<div class="g2">';
+  html += '<div class="card">';
+  html += secHead("P&amp;L summary — "+pL);
+  html += rrRow("Revenue from operations",cr(d.rev));
+  html += rrRow("EBITDA",d.eb ? cr(d.eb) : (fy==="27"?"Pending Q close":"—"));
+  html += rrRow("EBITDA margin",d.ebP ? pct(d.ebP) : (fy==="27"?"~20-21% est.":"—"));
+  html += rrRow("Finance costs",fy==="26"?"Rs 2.0 Cr":fy==="25"?"Rs 0.64 Cr":fy==="27"?"~Rs 0.5 Cr est.":"—");
+  html += rrRow("PAT",d.pat ? cr(d.pat) : (fy==="27"&&q==="q1"?"Pending Q close":"—"));
+  html += rrRow("PAT margin",d.patP ? pct(d.patP) : "—");
+  html += rrRow("Net cash accruals (NCA)",d.nca ? cr(d.nca) : (d.isProj?"~"+cr(d.pat)+" est.":fy==="27"?"~Rs 80 Cr annual run":"—"));
+  html += rrRow("ROCE",d.ro ? d.ro+"%" : "—");
+  html += rrRow("ROE",d.roe ? d.roe+"%" : "—");
+  html += rrRow("DSCR",fy==="26"?"~38x":fy==="25"?"53.9x":"—");
+  html += '</div>';
+
+  html += '<div class="card">';
+  html += secHead("Balance sheet — "+pL);
+  html += rrRow("Net worth",cr(d.nw||HIST["26"].nw));
+  html += rrRow("Total debt",cr(d.debt||HIST["26"].debt));
+  html += rrRow("Cash credit drawn",cr(LV.ccD)+" / Rs 75 Cr limit");
+  html += rrRow("CC utilisation",(LV.cu||57).toFixed(1)+"%");
+  html += rrRow("Fixed deposits (FDR)",cr(LV.fdr||3547));
+  html += rrRow("Trade receivables",cr(LV.rcv||HIST["26"].rcv));
+  html += rrRow("Supplier advances",cr(LV.sAdv||12268));
+  html += rrRow("Customer advances",cr(LV.cAdv||12973));
+  html += rrRow("CWIP + Intangibles","Rs 63.7 Cr");
+  html += rrRow("Pending IT demand","Rs 20.48 Cr","color:var(--ad)");
+  html += rrRow("BG sub-limit peak","98.2% (Jan 2026)","color:var(--ad)");
+  html += '</div>';
+  html += '</div>';
+
+  html += '<div class="card" style="margin-bottom:14px">';
+  html += secHead("Multi-year P&amp;L chart","FY27 Annual = projected");
+  html += '<div style="display:flex;gap:12px;margin-bottom:9px;font-size:11px;color:var(--mt);flex-wrap:wrap">';
+  html += '<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#059669;display:inline-block"></span>Revenue (Rs Cr)</span>';
+  html += '<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#d97706;display:inline-block"></span>PAT (Rs Cr)</span>';
+  html += '<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#dc2626;display:inline-block"></span>EBITDA % (right axis)</span>';
+  html += '</div>';
+  html += '<div style="position:relative;height:230px"><canvas id="fc" role="img" aria-label="Financial trend chart">Revenue PAT EBITDA trend</canvas></div>';
+  html += '</div>';
+
+  html += secHead("Segment breakdown — FY26 actuals");
+  html += '<div class="g4">';
+  html += mcCard("EPC Projects","Rs 380 Cr","94% of revenue","19.8% margin","up");
+  html += mcCard("O&amp;M Services","Rs 24 Cr","6% of revenue","~38% margin","up");
+  html += mcCard("Solar Parks","Pre-revenue","CWIP Rs 37.9 Cr","—","wa");
+  html += mcCard("BESS","~Rs 12 Cr","~3% incl. in EPC","~20% margin","");
+  html += '</div>';
+  return html;
+}
+
+// ── RATIOS ────────────────────────────────────────────────────────
+function rRa(d,fy,q,seg) {
+  var P27 = buildP27();
+  var liveGr = (LV.debt||2569)/(LV.nw||18235);
+  var liveCU = LV.cu||57;
+  var gauges = [
+    {l:"EBITDA margin",  v:fy==="27"?20.2:d.ebP, t:22,  mx:35,  u:"%",  inv:false},
+    {l:"NCA (Rs Cr)",    v:fy==="27"?(P27.nca/100):(d.nca?d.nca/100:null), t:37, mx:150, u:" Cr", inv:false},
+    {l:"Interest cover", v:d.ic||40.7,            t:5,   mx:70,  u:"x",  inv:false},
+    {l:"Gearing",        v:fy==="27"?liveGr:d.gr, t:1.0, mx:2,   u:"x",  inv:true},
+    {l:"Current ratio",  v:d.cr||1.77,             t:1.2, mx:5,   u:"x",  inv:false},
+    {l:"Debtor days",    v:d.dd||67,               t:90,  mx:180, u:"d",  inv:true},
+    {l:"Gross WC days",  v:d.gw||156,              t:230, mx:300, u:"d",  inv:true},
+    {l:"CC utilisation", v:liveCU,                 t:70,  mx:100, u:"%",  inv:true}
+  ];
+
+  var gHtml = '<div class="gg">';
+  for(var gi=0;gi<gauges.length;gi++) {
+    var g = gauges[gi];
+    var vv = g.v !== null && g.v !== undefined ? g.v : HIST["26"][["ebP","nca","ic","gr","cr","dd","gw","cu"][gi]];
+    if(vv === null || vv === undefined) vv = 0;
+    var pct2 = Math.min(100, (vv/g.mx)*100);
+    var tpct = Math.min(97, (g.t/g.mx)*100);
+    var ok = g.inv ? vv<=g.t : vv>=g.t;
+    var cl = g.inv ? vv<=g.t*1.2 : vv>=g.t*0.85;
+    var col = ok ? "#059669" : cl ? "#d97706" : "#dc2626";
+    var bg  = ok ? "#f0fdf4" : cl ? "#fffbeb" : "#fff5f5";
+    var note = fy==="27" ? " (live est.)" : "";
+    gHtml += '<div class="gc" style="background:'+bg+'">';
+    gHtml += '<div class="gc-l">'+g.l+'</div>';
+    gHtml += '<div class="gc-v" style="color:'+col+'">'+vv.toFixed(1)+g.u+'<span style="font-size:9px;font-weight:400;color:#9ca3af">'+note+'</span></div>';
+    gHtml += '<div class="gc-t"><div class="gc-f" style="width:'+pct2.toFixed(0)+'%;background:'+col+'"></div><div class="gc-m" style="left:'+tpct.toFixed(0)+'%"></div></div>';
+    gHtml += '<div class="gc-ft"><span>'+(g.inv?"&le;":"&ge;")+g.t+g.u+' target</span><span style="color:'+col+';font-weight:700">'+(ok?"Met":"Watch")+'</span></div>';
+    gHtml += '</div>';
+  }
+  gHtml += '</div>';
+
+  var html = alrt("blue","Showing best-available values for "+fyLbl(fy)+" - "+qLbl(q),"Live estimates use Zoho balance sheet. Past periods use audited/provisional. Bar marker = CRISIL target.");
+  html += secHead("Financial health gauges");
+  html += gHtml;
+
+  html += '<div class="g2" style="margin-bottom:14px">';
+  html += '<div class="card">';
+  html += '<div class="sh" style="color:var(--gd)">Upgrade triggers (CRISIL)</div>';
+  html += rrRow("NCA &gt; Rs 37 Cr",'<span class="tg tg-g">Rs 80.4 Cr — 2.17x trigger</span>');
+  html += rrRow("Gearing &lt; 1.0x",'<span class="tg tg-g">0.14x — near debt-free</span>');
+  html += rrRow("Interest cover &gt; 5x",'<span class="tg tg-g">40.7x — very strong</span>');
+  html += rrRow("EBITDA &gt; 22%",'<span class="tg tg-r">20.43% — 158 bps short</span>');
+  html += '</div>';
+
+  html += '<div class="card">';
+  html += '<div class="sh" style="color:var(--ad)">Downgrade watch items</div>';
+  html += rrRow("BG sub-limit util.",'<span class="tg tg-r">98.2% (Jan 2026) — HIGH</span>');
+  html += rrRow("CC+BG combined",'<span class="tg tg-a">76% peak — Moderate</span>');
+  html += rrRow("Supplier advances",'<span class="tg tg-a">Rs 55.6 Cr — elevated</span>');
+  html += rrRow("CWIP debt risk",'<span class="tg tg-a">Self-funded — watch</span>');
+  html += rrRow("Subsidiary exposure",'<span class="tg tg-a">5 subs — monitor</span>');
+  html += '</div>';
+  html += '</div>';
+
+  html += '<div class="card">';
+  html += secHead("Full ratio table — FY24 through FY27","FY27 Annual = projected");
+  html += '<div style="overflow-x:auto"><table class="tbl"><thead><tr>';
+  html += '<th>Metric</th><th>FY24</th><th>FY25 Aud.</th><th>FY26 Prov.</th><th>FY27 Q1 Live</th><th>FY27 Ann. E</th><th>CRISIL target</th><th>Status</th>';
+  html += '</tr></thead><tbody>';
+  var rows = [
+    ["Revenue (Rs Cr)","44.3","133.5","404","147 (2mo)",(P27.rev/100).toFixed(0),"—","good"],
+    ["EBITDA %","12.18%","29.11%","20.43%","~20% est.",P27.ebP+"%E","&gt;22%","watch"],
+    ["PAT %","6.3%","19.4%","19.6%","—","19.6%E","&gt;15%","good"],
+    ["NCA (Rs Cr)","4","27.9","80.4","—","~"+(P27.nca/100).toFixed(0)+"E","&gt;37 Cr","good"],
+    ["Interest cover","19.7x","57.9x","40.7x","~40.7x","~35xE","&gt;5x","good"],
+    ["Gearing","&lt;0.1","0.09","0.14","~"+liveGr.toFixed(2),"~0.15E","&lt;1.0x","good"],
+    ["ROCE","—","65.2%","~56%","—","~50%E","&gt;20%","good"],
+    ["ROE","—","49.3%","61.5%","—","~45%E","&gt;15%","good"],
+    ["Current ratio","&gt;3","3.76","1.77","~1.77","~1.9E","&gt;1.2x","watch"],
+    ["Debtor days","112d","112d","67d","~67d","&lt;70dE","&lt;90d","good"],
+    ["Gross WC days","—","~155d","~156d","~156d","~150dE","&lt;230d","watch"],
+    ["Debt/EBITDA","&lt;0.1","0.17","0.31","—","~0.3E","&lt;3.0x","good"],
+    ["CC+BG util.","—","~65%","76% peak","57% live","&lt;75%E","&lt;85%","watch"],
+    ["BG sub-limit","—","N/A","98.2% peak","—","&lt;90%E","&lt;90%","risk"]
+  ];
+  for(var ri2=0;ri2<rows.length;ri2++) {
+    var row = rows[ri2];
+    var st = row.pop();
+    html += '<tr><td style="font-weight:500">'+row[0]+'</td>';
+    for(var ci=1;ci<row.length;ci++) html += '<td>'+row[ci]+'</td>';
+    html += '<td><span class="'+tgc(st)+' tg">'+(st==="good"?"Strong":st==="watch"?"Monitor":"High risk")+'</span></td></tr>';
+  }
+  html += '</tbody></table></div></div>';
+  return html;
+}
+
+// ── PROJECTS & PARKS ──────────────────────────────────────────────
+function rPr(d,fy,q,seg) {
+  var totalCWIP = 0, totalAR = 0;
+  for(var i=0;i<PARKS.length;i++) { totalCWIP+=PARKS[i].inv; totalAR+=PARKS[i].ar; }
+
+  var html = secHead("Solar park pipeline — 8 locations","Click any row for full detail");
+  for(var pi=0;pi<PARKS.length;pi++) {
+    var p = PARKS[pi];
+    var spent_pct = Math.round(p.inv/p.budget*100);
+    html += '<div class="pk" onclick="openParkModal('+p.id+')">';
+    html += '<div style="flex:0 0 185px"><div style="font-size:13px;font-weight:600">'+p.nm+'</div><div style="font-size:11px;color:var(--mt)">'+p.loc+'</div></div>';
+    html += '<span class="tg '+(p.st==="CWIP"?"tg-a":"tg-b")+'">'+p.st+'</span>';
+    html += '<div style="flex:0 0 60px;font-size:12px;color:var(--mt)">'+p.mw+'</div>';
+    html += '<div style="flex:0 0 80px;font-size:12px;font-weight:600">'+cr(p.inv)+'</div>';
+    html += '<div style="flex:0 0 60px">'+progBar(spent_pct)+'<div style="font-size:10px;color:var(--mt);margin-top:2px">'+spent_pct+'% spent</div></div>';
+    html += '<div style="flex:0 0 90px;font-size:11px;color:var(--mt)">Comm. '+p.cm+'</div>';
+    html += '<div style="flex:0 0 80px;font-size:11px;color:var(--mt)">Rs '+p.tr+'</div>';
+    html += '<div style="flex:0 0 85px;font-size:11px;color:var(--gd);font-weight:600">'+cr(p.ar)+'/yr</div>';
+    html += '<div style="flex:1;font-size:10px;color:var(--ht)">'+p.nt+'</div>';
+    html += '<div style="font-size:10px;color:var(--b);font-weight:600">View &rarr;</div>';
+    html += '</div>';
+  }
+
+  html += '<div class="g4" style="margin-bottom:18px">';
+  html += mcCard("Total CWIP invested",cr(totalCWIP),"5 active parks",null,"");
+  html += mcCard("Intangibles under dev.","Rs 23.7 Cr","Dev. rights + costs",null,"");
+  html += mcCard("FDRs pledged (BG)","Rs 15.7 Cr","Restricted — in talks to release",null,"wa");
+  html += mcCard("Est. annual tariff income",cr(totalAR),"Post all commissioning",null,"up");
+  html += '</div>';
+
+  html += secHead("Active EPC projects","Click for detail");
+  for(var ei=0;ei<EPC.length;ei++) {
+    var ep = EPC[ei];
+    var done_pct = ep.done;
+    html += '<div class="pk" onclick="openEPCModal('+ep.id+')">';
+    html += '<div style="flex:0 0 220px"><div style="font-size:13px;font-weight:600">'+ep.nm+'</div><div style="font-size:11px;color:var(--mt)">'+ep.client+' - '+ep.loc+'</div></div>';
+    html += '<span class="tg '+(ep.seg==="EPC+BESS"?"tg-p":"tg-b")+'">'+ep.seg+'</span>';
+    html += (ep.rpt ? '<span class="tg tg-a">RPT</span>' : '<span class="tg tg-g">Standard</span>');
+    html += '<div style="flex:0 0 85px;font-size:12px;font-weight:600">'+cr(ep.val)+'</div>';
+    html += '<div style="flex:0 0 80px;font-size:11px;color:var(--mt)">Billed: '+cr(ep.billed)+'</div>';
+    html += '<div style="flex:0 0 65px">'+progBar(done_pct)+'<div style="font-size:10px;color:var(--mt);margin-top:2px">'+done_pct+'%</div></div>';
+    html += '<div style="flex:0 0 80px;font-size:11px;color:'+(ep.margin>=22?"var(--gd)":"var(--mt)")+'">Margin: '+ep.margin+'%</div>';
+    html += '<div style="flex:1;font-size:10px;color:var(--ht)">'+ep.st+'</div>';
+    html += '<div style="font-size:10px;color:var(--b);font-weight:600">View &rarr;</div>';
+    html += '</div>';
+  }
+
+  html += '<div class="g2" style="margin-top:18px">';
+  html += '<div class="card">';
+  html += secHead("O&amp;M segment — Rays O&amp;M Experts Pvt Ltd");
+  html += '<div class="g3" style="margin-bottom:10px">';
+  html += mcCard("O&amp;M revenue FY26","Rs 24 Cr","6% of group revenue",null,"");
+  html += mcCard("O&amp;M margin","~38%",null,"High-margin annuity","up");
+  html += mcCard("Sites managed","~42","~109 MW managed",null,"");
+  html += '</div>';
+  html += '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Client</th><th>Capacity</th><th>Contract</th><th>Annual (Rs L)</th><th>Next renewal</th><th>Status</th></tr></thead><tbody>';
+  for(var oi=0;oi<OMC.length;oi++) {
+    var oc = OMC[oi];
+    html += '<tr><td style="font-weight:500">'+oc.c+'</td><td>'+oc.mw+'</td><td>'+oc.ct+'</td><td>Rs '+oc.a+'</td><td>'+oc.nx+'</td><td><span class="tg '+(oc.ok?"tg-g":"tg-a")+'">'+(oc.ok?"Active":"Due")+'</span></td></tr>';
+  }
+  html += '</tbody></table></div></div>';
+
+  html += '<div class="card">';
+  html += secHead("BESS segment");
+  html += '<div class="g2" style="margin-bottom:10px">';
+  html += mcCard("BESS projects FY26","2","Wonder Cement Ph.2",null,"");
+  html += mcCard("BESS revenue est.","~Rs 12 Cr","Growing segment",null,"");
+  html += '</div>';
+  html += alrt("blue","Strategic BESS opportunity","India BESS market 10x by FY30. RPEL's cement and steel client relationships are a natural entry. Target Rs 50-80 Cr BESS revenue by FY28.");
+  html += '</div></div>';
+  return html;
+}
+
+// ── CLIENTS ───────────────────────────────────────────────────────
+function rCl(d,fy,q,seg) {
+  var tc = LV.tc;
+  var html = '<div class="card" style="margin-bottom:14px">';
+  html += secHead("Client portfolio — FY27 Q1 live billing &amp; outstanding");
+  html += '<div style="overflow-x:auto"><table class="tbl"><thead><tr>';
+  html += '<th>#</th><th>Client</th><th>Sector</th><th>Billed</th><th>Outstanding</th><th>Collection</th><th>Risk</th>';
+  html += '</tr></thead><tbody>';
+  for(var ci=0;ci<tc.length;ci++) {
+    var cl2 = tc[ci];
+    var op = cl2.b ? Math.round((cl2.o||0)/cl2.b*100) : 0;
+    var col2 = 100-op;
+    var st2 = op>80?"risk":op>30?"watch":"good";
+    html += '<tr>';
+    html += '<td style="color:var(--ht)">'+(ci+1)+'</td>';
+    html += '<td style="font-weight:600">'+cl2.nm+'</td>';
+    html += '<td><span class="tg tg-b">'+(cl2.s||"—")+'</span></td>';
+    html += '<td>'+cr(cl2.b)+'</td>';
+    html += '<td><span class="'+tgc(st2)+' tg">'+cr(cl2.o||0)+'</span></td>';
+    html += '<td style="min-width:90px"><div style="display:flex;align-items:center;gap:6px">'+progBar(col2)+'<span>'+col2.toFixed(0)+'%</span></div></td>';
+    html += '<td><span class="'+tgc(st2)+' tg">'+(op>80?"High outstanding":op>30?"Monitor":"Clean")+'</span></td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table></div></div>';
+
+  html += '<div class="g2">';
+  html += '<div class="card">';
+  html += secHead("FY26 revenue by sector");
+  html += '<div style="display:flex;gap:10px;margin-bottom:9px;font-size:11px;color:var(--mt);flex-wrap:wrap">';
+  html += '<span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:2px;background:#059669;display:inline-block"></span>Cement 28%</span>';
+  html += '<span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:2px;background:#2563eb;display:inline-block"></span>Steel 22%</span>';
+  html += '<span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:2px;background:#d97706;display:inline-block"></span>Chemicals 12%</span>';
+  html += '<span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:2px;background:#9333ea;display:inline-block"></span>Other 38%</span>';
+  html += '</div>';
+  html += '<div style="position:relative;height:175px"><canvas id="sc" role="img" aria-label="Sector donut chart">Sector breakdown</canvas></div>';
+  html += '</div>';
+
+  html += '<div class="card">';
+  html += secHead("Supplier risk analysis");
+  html += rrRow("Waaree Energies (top supplier)","Rs 182.7 Cr — 63.3%","color:var(--rd)");
+  html += rrRow("Top-10 suppliers total","Rs 288.7 Cr");
+  html += rrRow("Cyrun Infra (FY25 supplier)","Related party — disclose","color:var(--ad)");
+  html += rrRow("Supplier advances",cr(LV.sAdv||12268)+" outstanding","color:var(--ad)");
+  html += rrRow("Target concentration","No single supplier &gt;50% by FY28");
+  html += alrt("amber","Immediate action","Issue RFQ to Adani Solar, Vikram Solar, Goldi Solar this quarter. Target Waaree below 50% by FY28.");
+  html += '</div></div>';
+
+  html += '<div class="card">';
+  html += secHead("FY26 top-10 customers by revenue");
+  html += '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>#</th><th>Customer</th><th>FY26 revenue</th><th>% of total</th><th>Segment</th><th>Notes</th></tr></thead><tbody>';
+  var topC = [
+    [1,"Wonder Cement","Rs 113.8 Cr","28.2%","Cement","Ph.2 + BESS order"],
+    [2,"JSW Group","Rs 203.7 Cr","50.4%","Steel","Largest single order"],
+    [3,"Uttam Strips","Rs 87.4 Cr","21.6%","Steel","Active delivery"],
+    [4,"Soltown Infra","Rs 29.1 Cr","7.2%","—","RPT — CRISIL query"],
+    [5,"Inox Air Products","Rs 22.0 Cr","5.4%","Chemicals","Repeat client"],
+    [6,"Borosil / Le Emerge","Rs 18.0 Cr","4.5%","Glass","New FY26"],
+    [7,"Honda/ASK Auto","Rs 16.0 Cr","4.0%","Auto","FY26 addition"],
+    [8,"Keystone Resorts","Rs 12.0 Cr","3.0%","Hospitality","Rooftop segment"],
+    [9,"Lords Chloro Alkali","Rs 11.0 Cr","2.7%","Chemicals","O&amp;M + EPC"],
+    [10,"Other clients","Rs 51.0 Cr","12.6%","Diversified","19+ orders"]
+  ];
+  for(var ti=0;ti<topC.length;ti++) {
+    var tc2 = topC[ti];
+    html += '<tr><td style="color:var(--ht)">'+tc2[0]+'</td><td style="font-weight:500">'+tc2[1]+'</td><td>'+tc2[2]+'</td><td>'+tc2[3]+'</td><td><span class="tg tg-b">'+tc2[4]+'</span></td><td style="font-size:11px;color:var(--mt)">'+tc2[5]+'</td></tr>';
+  }
+  html += '</tbody></table></div></div>';
+  return html;
+}
+
+// ── ADVISORY ──────────────────────────────────────────────────────
+function rAd(d,fy,q,seg) {
+  var html = '<div class="sh" style="color:var(--rd);margin-bottom:9px">Critical — act this month</div>';
+  html += alrt("red","EBITDA margin 20.43% — 158 bps below CRISIL 22% upgrade trigger","(1) Insert price escalation clauses in ALL new EPC contracts — tie to MNRE module price index; (2) Standardise designs for 1/5/10 MW — cuts engineering cost ~15% per project; (3) Negotiate annual volume contract with Waaree for 8-12% discount; (4) Target 21.5% EBITDA by Q2 FY27, 22% by Q4 FY27. Present this roadmap at the CRISIL review meeting.");
+  html += alrt("red","BG sub-limit 98.2% (Jan 2026) — CRISIL benchmark below 90%","(1) Write formally to IOB requesting BG sub-limit enhancement to Rs 70-75 Cr — 0.14x gearing makes this a strong ask; (2) For repeat clients negotiate BG percentage down from 10% to 7% — frees Rs 8-10 Cr headroom; (3) Provide enhancement letter copy to CRISIL at review.");
+  html += alrt("red","Pending IT demand Rs 20.48 Cr (AY 2022-23) — unprovisioned","(1) Engage senior IT litigation counsel for written probability opinion; (2) If loss probability above 50% — provision in FY27 proactively; (3) Brief CRISIL on AY 2022-23 defence grounds and timeline at review.");
+
+  html += '<div class="sh" style="color:var(--ad);margin-top:14px;margin-bottom:9px">High priority — monitor closely</div>';
+  html += alrt("amber","Current ratio 3.76x to 1.77x in one year — pace concerns CRISIL","(1) Target 2.0x by end of FY27; (2) Convert Rs 55.6 Cr supplier advances to BG-backed credit lines; (3) Follow up urgently on WC limit increase application to IOB.");
+  html += alrt("amber","57 overdue invoices — collections discipline critical for GCA days","(1) Set Zoho Books aging alert for invoices older than 45 days; (2) Assign weekly collections call for every invoice above Rs 25 L outstanding more than 45 days; (3) Target debtor days 60 or less in FY27.");
+  html += alrt("amber","Soltown Infra Rs 29.1 Cr (4th largest) — related party transparency required","(1) Prepare RPT pack: shareholding structure, nature of solar projects, arm's-length pricing evidence, receivable ageing; (2) Have pack ready before CRISIL review.");
+  html += alrt("amber","Waaree = 63.3% of purchases — single-source concentration","(1) Issue RFQ to Adani Solar, Vikram Solar, Goldi Solar this quarter; (2) Target no single supplier above 50% by FY28.");
+
+  html += '<div class="sh" style="color:var(--gd);margin-top:14px;margin-bottom:9px">Key strengths — build on and highlight to CRISIL</div>';
+  html += alrt("green","NCA Rs 80.4 Cr = 2.17x upgrade trigger — strongest single argument","Lead every CRISIL discussion with NCA. 20x growth in 2 years. Project FY27 NCA Rs 100+ Cr. Ask at review: At what NCA level is A- possible?");
+  html += alrt("green","Revenue run rate Rs 885 Cr — use to unlock more bank credit","Apply for CC limit enhancement Rs 75 to Rs 125 Cr. At 0.14x gearing and 40x IC you have massive capacity.");
+  html += alrt("green","Debtor days 112 to 67 despite 3x revenue growth — exceptional","Formalise as a board KPI. Show CRISIL a live Zoho aging report at review.");
+  html += alrt("green","CWIP Rs 37.9 Cr — 8 parks near commissioning = structural recurring income","Prepare commissioning deck. Rs 11.6 Cr annual tariff income post-commissioning structurally de-risks the EPC model.");
+
+  html += '<div class="sh" style="color:var(--bd);margin-top:14px;margin-bottom:9px">Strategic — medium term</div>';
+  html += alrt("blue","Target O&M revenue Rs 50 Cr by FY28","O&M margin ~38% vs EPC ~20%. Call all FY23-FY25 project clients this quarter. Dedicated O&M BD team.");
+  html += alrt("blue","Apply for WC limit Rs 125 Cr — metrics strongly support it","NCA Rs 80 Cr + gearing 0.14x + IC 40x = among strongest EPC credit profiles at this revenue scale.");
+  html += alrt("blue","Geographic diversification — 2 projects outside Rajasthan in FY27","Gujarat GUVNL, MP, Haryana all active. Rs 30-50 Cr outside RJ reduces CRISIL geographic concentration concern.");
+  html += alrt("blue","Appoint 1 independent director — finance or infrastructure background","Adds CRISIL credibility, future PE investor appeal, lender confidence at minimal cost.");
+
+  html += '<div class="sh" style="margin-top:18px;margin-bottom:9px">6-month CRISIL upgrade roadmap</div>';
+  html += '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Month</th><th>Action</th><th>Owner</th><th>Rating impact</th><th>Priority</th></tr></thead><tbody>';
+  var road = [
+    ["M1","Escalation clauses in all new EPC contracts","MD + Legal","EBITDA margin to 22%","risk"],
+    ["M1","Zoho Books WC MIS and aging dashboard","CFO","GCA monitoring","info"],
+    ["M2","BG sub-limit enhancement application to IOB","CFO + Bank","Fix 98.2% peak util.","risk"],
+    ["M2","Qualify 2 alternate module suppliers","Procurement","Reduce Waaree risk","watch"],
+    ["M2","Close FDR to property security swap","CFO + IOB","Free Rs 15.7 Cr","watch"],
+    ["M3","Soltown RPT disclosure pack ready","Legal + Finance","CRISIL governance","watch"],
+    ["M3","Appoint independent director","Board","Governance signal","info"],
+    ["M4","CRISIL data pack with FY27 projections","CFO + Advisor","Review ready","info"],
+    ["M5","Submit FY27 Q1 financials proactively","CFO","Proactive signal","info"],
+    ["M6","Request formal CRISIL upgrade review meeting","MD + CFO","BBB+ or A- target","good"]
+  ];
+  for(var ri3=0;ri3<road.length;ri3++) {
+    var rw = road[ri3];
+    html += '<tr><td><span class="'+tgc(rw[4])+' tg">'+rw[0]+'</span></td><td style="font-weight:500">'+rw[1]+'</td><td style="color:var(--mt)">'+rw[2]+'</td><td>'+rw[3]+'</td><td><span class="'+tgc(rw[4])+' tg">'+(rw[4]==="risk"?"Critical":rw[4]==="watch"?"High":rw[4]==="good"?"Target":"Medium")+'</span></td></tr>';
+  }
+  html += '</tbody></table></div>';
+  return html;
+}
+
+// ── 3-YEAR TREND ──────────────────────────────────────────────────
+function rTr() {
+  var P27 = buildP27();
+  var html = '<div class="g4" style="margin-bottom:14px">';
+  html += mcCard("Revenue growth (2yr)","9x","Rs 44 to Rs 134 to Rs 404 Cr",null,"up");
+  html += mcCard("NCA growth (2yr)","20x","Rs 4 to Rs 28 to Rs 80 Cr",null,"up");
+  html += mcCard("Net worth growth","15x","Rs 12 to Rs 75 to Rs 182 Cr",null,"up");
+  html += mcCard("EBITDA trend","Volatile","12% then 29% then 20%",null,"wa");
+  html += '</div>';
+
+  html += '<div class="card" style="margin-bottom:14px">';
+  html += secHead("FY24 to FY27 financial trend","FY27 Annual = projected");
+  html += '<div style="display:flex;gap:12px;margin-bottom:9px;font-size:11px;color:var(--mt);flex-wrap:wrap">';
+  html += '<span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:2px;background:#059669;display:inline-block"></span>Revenue (Rs Cr)</span>';
+  html += '<span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:2px;background:#d97706;display:inline-block"></span>PAT (Rs Cr)</span>';
+  html += '<span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:2px;background:#dc2626;display:inline-block"></span>EBITDA % (right axis)</span>';
+  html += '</div>';
+  html += '<div style="position:relative;height:260px"><canvas id="tc" role="img" aria-label="3-year trend chart">FY24 44Cr FY25 134Cr FY26 404Cr</canvas></div>';
+  html += '</div>';
+
+  html += '<div class="g3">';
+  html += alrt("green","FY24 to FY25","Revenue +201%. EBITDA peak 29.11%. NCA 7x. Gearing 0.09x.");
+  html += alrt("amber","FY25 to FY26","Revenue +203%. EBITDA minus 8.7pp to 20.43%. PAT 3x. Net worth 2.4x. CWIP expanded to Rs 37.9 Cr.");
+  html += alrt("green","FY26 to FY27E","Run rate Rs 885 Cr. Margin recovery targeted 21.5%. Parks commissioning. BBB+ upgrade possible.");
+  html += '</div>';
+
+  html += '<div class="card">';
+  html += secHead("Year-on-year ratio comparison");
+  html += '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Metric</th><th>FY24</th><th>FY25 (Aud.)</th><th>FY26 (Prov.)</th><th>FY27 Q1 Live</th><th>FY27 Ann. Proj.</th><th>Change FY25 to FY26</th></tr></thead><tbody>';
+  var trows = [
+    ["Revenue (Rs Cr)","44.3","133.5","404.0","147 (2mo)",(P27.rev/100).toFixed(0)+"E","+203%"],
+    ["EBITDA margin","12.18%","29.11%","20.43%","~20% est.",P27.ebP+"%E","-8.7pp"],
+    ["PAT (Rs Cr)","2.78","25.90","79.20","—",(P27.pat/100).toFixed(0)+"E","+206%"],
+    ["NCA (Rs Cr)","4.0","27.9","80.4","—","~"+(P27.nca/100).toFixed(0)+"E","+188%"],
+    ["Net worth (Rs Cr)","12.5","75.0","182.4","—",(P27.nw/100).toFixed(0)+"E","+143%"],
+    ["Gearing","&lt;0.1x","0.09x","0.14x","~0.16x","~0.15xE","Slight increase"],
+    ["Interest cover","19.7x","57.9x","40.7x","~40x","~35xE","-17.2x"],
+    ["Current ratio","&gt;3x","3.76x","1.77x","~1.77x","~1.9xE","-1.99x"],
+    ["Debtor days","112d","112d","67d","~67d","&lt;70dE","-45 days"],
+    ["CWIP (Rs Cr)","0","2.37","37.9","37.9","37.9","+16x"]
+  ];
+  for(var tr2=0;tr2<trows.length;tr2++) {
+    var trw = trows[tr2];
+    html += '<tr>';
+    for(var tc3=0;tc3<trw.length;tc3++) html += (tc3===0?'<td style="font-weight:500">':'<td>')+trw[tc3]+'</td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table></div></div>';
+  return html;
+}
+
+// ── MODAL: PARK DETAIL ────────────────────────────────────────────
+function openParkModal(id) {
+  var p = null;
+  for(var i=0;i<PARKS.length;i++) { if(PARKS[i].id===id) { p=PARKS[i]; break; } }
+  if(!p) return;
+  var spent_pct = Math.round(p.inv/p.budget*100);
+  document.getElementById("modal-title").textContent = p.nm;
+  document.getElementById("modal-sub").textContent   = p.loc+" - "+p.mw+" - "+p.st+" - Commissioning: "+p.cm;
+
+  var html = '<div class="g4" style="margin-bottom:18px">';
+  html += mcCard("Total budget",cr(p.budget),null,null,"");
+  html += mcCard("Spent to date",cr(p.inv),spent_pct+"% of budget",null,"");
+  html += mcCard("Balance unspent",cr(p.budget-p.inv),null,null,"");
+  html += mcCard("Est. annual tariff",cr(p.ar)+"/yr","Rs "+p.tr,null,"up");
+  html += '</div>';
+
+  html += '<div class="g2" style="margin-bottom:18px">';
+  html += '<div class="card">';
+  html += secHead("Financial transactions (Zoho Books)");
+  html += rrRow("Purchase orders raised",p.pos+" POs");
+  html += rrRow("Sales / work orders",p.sos+" SOs");
+  html += rrRow("Supplier bills",p.bills+" bills");
+  html += rrRow("Invoices raised",p.inv_cnt+" invoices");
+  html += rrRow("Payments made",cr(p.paid));
+  html += rrRow("Outstanding payables",cr(p.opay));
+  html += rrRow("Credit notes","As per Zoho Books");
+  html += rrRow("Tariff rate","Rs "+p.tr);
+  html += '</div>';
+
+  html += '<div class="card">';
+  html += secHead("Project milestones");
+  for(var mi=0;mi<p.ml.length;mi++) {
+    var done = p.ml[mi].indexOf("done") > -1 || p.ml[mi].indexOf("done") > -1;
+    var isDone = p.ml[mi].toLowerCase().indexOf("done")>-1;
+    html += '<div class="rr"><span style="font-size:12px;color:'+(isDone?"var(--gd)":"var(--mt)")+'">'+(isDone?"&#9989; ":"&#9203; ")+p.ml[mi]+'</span></div>';
+  }
+  html += '</div></div>';
+
+  html += '<div class="card">';
+  html += secHead("Budget utilisation");
+  html += '<div style="margin-bottom:8px">';
+  html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mt);margin-bottom:4px"><span>Budget utilisation</span><span>'+spent_pct+'% ('+cr(p.inv)+' of '+cr(p.budget)+')</span></div>';
+  html += '<div style="height:10px;background:#e5e7eb;border-radius:5px;overflow:hidden"><div style="height:100%;width:'+spent_pct+'%;background:'+(spent_pct>90?"#dc2626":spent_pct>70?"#d97706":"#059669")+';border-radius:5px"></div></div>';
+  html += '</div>';
+  html += alrt("blue","Live data note","Transaction details reflect Zoho Books data. Hit Refresh Live Data on the main dashboard to pull the latest figures. Expected annual tariff income of "+cr(p.ar)+" starts from commissioning ("+p.cm+").");
+  html += '</div>';
+
+  document.getElementById("modal-body").innerHTML = html;
+  document.getElementById("modal-bg").classList.add("open");
+}
+
+function openEPCModal(id) {
+  var ep = null;
+  for(var i=0;i<EPC.length;i++) { if(EPC[i].id===id) { ep=EPC[i]; break; } }
+  if(!ep) return;
+  var billed_pct = Math.round(ep.billed/ep.val*100);
+  var coll_pct   = Math.round(ep.coll/ep.billed*100);
+  document.getElementById("modal-title").textContent = ep.nm;
+  document.getElementById("modal-sub").textContent   = ep.client+" - "+ep.loc+" - "+ep.seg+" - "+ep.st;
+
+  var html = '<div class="g4" style="margin-bottom:18px">';
+  html += mcCard("Contract value",cr(ep.val),null,null,"");
+  html += mcCard("Billed to date",cr(ep.billed),billed_pct+"% of contract",null,"");
+  html += mcCard("Collected",cr(ep.coll),null,null,"up");
+  html += mcCard("Project margin",ep.margin+"%",null,ep.margin>=22?"Above CRISIL trigger":"Below 22% trigger",ep.margin>=22?"up":"wa");
+  html += '</div>';
+
+  html += '<div class="g2" style="margin-bottom:18px">';
+  html += '<div class="card">';
+  html += secHead("Project details");
+  html += rrRow("Client",ep.client);
+  html += rrRow("Location",ep.loc);
+  html += rrRow("Segment",ep.seg);
+  html += rrRow("Status",ep.st);
+  html += rrRow("Completion",ep.done+"%");
+  html += rrRow("Margin",ep.margin+"%");
+  html += rrRow("Outstanding",(ep.billed-ep.coll>0?cr(ep.billed-ep.coll):"Nil"));
+  html += rrRow("RPT flag",ep.rpt?"Yes — disclose to CRISIL":"No");
+  html += '</div>';
+
+  html += '<div class="card">';
+  html += secHead("Progress");
+  html += '<div style="margin-bottom:10px"><div style="font-size:11px;color:var(--mt);margin-bottom:4px">Completion: '+ep.done+'%</div><div style="height:7px;background:#e5e7eb;border-radius:3px;overflow:hidden"><div style="height:100%;width:'+ep.done+'%;background:#059669;border-radius:3px"></div></div></div>';
+  html += '<div style="margin-bottom:10px"><div style="font-size:11px;color:var(--mt);margin-bottom:4px">Billed: '+billed_pct+'% of contract</div><div style="height:7px;background:#e5e7eb;border-radius:3px;overflow:hidden"><div style="height:100%;width:'+billed_pct+'%;background:#2563eb;border-radius:3px"></div></div></div>';
+  html += '<div><div style="font-size:11px;color:var(--mt);margin-bottom:4px">Collected: '+coll_pct+'% of billed</div><div style="height:7px;background:#e5e7eb;border-radius:3px;overflow:hidden"><div style="height:100%;width:'+coll_pct+'%;background:#d97706;border-radius:3px"></div></div></div>';
+  html += '</div></div>';
+
+  if(ep.rpt) html += alrt("amber","Related Party Transaction","Soltown Infra requires CRISIL disclosure. Prepare RPT pack: shareholding, nature of transactions, arm's-length pricing evidence, receivable ageing.");
+
+  document.getElementById("modal-body").innerHTML = html;
+  document.getElementById("modal-bg").classList.add("open");
+}
+
+function closeModal() {
+  document.getElementById("modal-bg").classList.remove("open");
+}
+
+// ── CHARTS ────────────────────────────────────────────────────────
+function bCharts(d,fy,q) {
+  var P27 = buildP27();
+  var baseOpts = {responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}};
+  var gc = "rgba(0,0,0,0.05)", tc2 = "#9ca3af";
+
+  var fcEl = document.getElementById("fc");
+  if(fcEl) {
+    charts["fc"] = new Chart(fcEl, {
+      data:{
+        labels:["FY24","FY25","FY26","FY27 Q1","FY27 Ann.E"],
+        datasets:[
+          {type:"bar",  data:[44.3,133.5,404, +(LV.rev/100).toFixed(1), +(P27.rev/100).toFixed(0)], backgroundColor:["#d1fae5","#6ee7b7","#059669","#10b981","#c4b5fd"], yAxisID:"y",  label:"Revenue"},
+          {type:"bar",  data:[2.8,  25.9, 79.2,null,                    +(P27.pat/100).toFixed(0)],  backgroundColor:["#fde68a","#fbbf24","#f59e0b",null,      "#fdba74"],    yAxisID:"y",  label:"PAT"},
+          {type:"line", data:[12.18,29.11,20.43,20.2,                   P27.ebP],                    borderColor:"#dc2626",backgroundColor:"transparent",borderWidth:2.5,pointBackgroundColor:"#dc2626",yAxisID:"y2",tension:0.3,spanGaps:true,label:"EBITDA%"}
+        ]
+      },
+      options: Object.assign({}, baseOpts, {scales:{
+        x:{ticks:{color:tc2,font:{size:11}},grid:{display:false}},
+        y:{ticks:{color:tc2,font:{size:10},callback:function(v){return "Rs"+v;}},grid:{color:gc}},
+        y2:{position:"right",ticks:{color:"#dc2626",font:{size:10},callback:function(v){return v+"%-";}},grid:{display:false},min:0,max:38}
+      }})
+    });
+  }
+
+  var scEl = document.getElementById("sc");
+  if(scEl) {
+    charts["sc"] = new Chart(scEl, {
+      type:"doughnut",
+      data:{labels:["Cement","Steel","Chemicals","Auto/Other"],datasets:[{data:[28,22,12,38],backgroundColor:["#059669","#2563eb","#d97706","#9333ea"],borderWidth:2,borderColor:"#fff"}]},
+      options: Object.assign({}, baseOpts, {cutout:"66%"})
+    });
+  }
+
+  var tcEl = document.getElementById("tc");
+  if(tcEl) {
+    charts["tc"] = new Chart(tcEl, {
+      data:{
+        labels:["FY24","FY25","FY26","FY27 Q1","FY27 Ann.E"],
+        datasets:[
+          {type:"bar",  data:[44.3,133.5,404, +(LV.rev/100).toFixed(1), +(P27.rev/100).toFixed(0)], backgroundColor:["#d1fae5","#6ee7b7","#059669","#10b981","#c4b5fd"], yAxisID:"y",  label:"Revenue"},
+          {type:"bar",  data:[2.8,  25.9, 79.2,null,                    +(P27.pat/100).toFixed(0)],  backgroundColor:["#fde68a","#fbbf24","#f59e0b",null,      "#fdba74"],    yAxisID:"y",  label:"PAT"},
+          {type:"line", data:[12.18,29.11,20.43,20.2,                   P27.ebP],                    borderColor:"#dc2626",backgroundColor:"transparent",borderWidth:2.5,pointBackgroundColor:"#dc2626",yAxisID:"y2",tension:0.3,spanGaps:true,label:"EBITDA%"}
+        ]
+      },
+      options: Object.assign({}, baseOpts, {scales:{
+        x:{ticks:{color:tc2,font:{size:11}},grid:{display:false}},
+        y:{ticks:{color:tc2,font:{size:10},callback:function(v){return "Rs"+v;}},grid:{color:gc}},
+        y2:{position:"right",ticks:{color:"#dc2626",font:{size:10},callback:function(v){return v+"%";}},grid:{display:false},min:0,max:40}
+      }})
+    });
+  }
+}
+
+// ── CSV EXPORT ────────────────────────────────────────────────────
+function dlCSV() {
+  var P27 = buildP27();
+  var rows = [
+    ["Metric","FY24","FY25","FY26","FY27 Q1 live","FY27 Annual proj."],
+    ["Revenue (Rs Cr)","44.3","133.5","404.0",(LV.rev/100).toFixed(1),(P27.rev/100).toFixed(0)],
+    ["EBITDA Margin (%)","12.18","29.11","20.43","~20.2 est.",P27.ebP],
+    ["PAT (Rs Cr)","2.78","25.90","79.20","—",(P27.pat/100).toFixed(0)],
+    ["NCA (Rs Cr)","4.02","27.94","80.40","—",(P27.nca/100).toFixed(0)],
+    ["Net Worth (Rs Cr)","12.5","75.0","182.35","—",(P27.nw/100).toFixed(0)],
+    ["Gearing","0.09","0.09","0.14","~0.16","~0.15"],
+    ["Interest Coverage","19.7","57.9","40.7","~40.7","~35"],
+    ["Debtor Days","112","112","67","~67","<70 est."],
+    ["Current Ratio",">3","3.76","1.77","~1.77","~1.9 est."],
+    ["CWIP (Rs Cr)","0","2.37","37.90","37.90","37.90"],
+    ["Order Book (Rs Cr)","—","—","651.6","651.6","651.6"],
+    ["CC Drawn (Rs Cr)","—","—","24.0",(LV.ccD/100).toFixed(1),"—"],
+    ["CC Utilisation (%)","—","—","76",LV.cu?LV.cu.toFixed(1):"57","—"]
+  ];
+  var csv = rows.map(function(r){return r.join(",");}).join("\n");
+  var a = document.createElement("a");
+  a.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+  a.download = "RPEL_Dashboard_" + new Date().toISOString().slice(0,10) + ".csv";
+  a.click();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+document.getElementById("src-pill").textContent = "Baseline data loaded";
+document.getElementById("src-pill").className   = "pill pa";
+document.getElementById("ts").textContent       = "Baseline — click Refresh for live data";
+renderAll();
+setTimeout(function(){ doRefresh(); }, 600);
+</script>
+</body>
+</html>
